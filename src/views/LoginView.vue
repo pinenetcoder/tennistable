@@ -14,6 +14,8 @@ const showEmailForm = ref(false)
 const isSignUp = ref(false)
 const email = ref('')
 const password = ref('')
+const firstName = ref('')
+const lastName = ref('')
 const emailLoading = ref(false)
 const emailSuccess = ref('')
 
@@ -37,7 +39,7 @@ async function submitEmail() {
   emailSuccess.value = ''
   try {
     if (isSignUp.value) {
-      await authStore.signUpWithEmail(email.value, password.value)
+      await authStore.signUpWithEmail(email.value, password.value, firstName.value, lastName.value)
       emailSuccess.value = t('checkEmail')
     } else {
       await authStore.signInWithEmail(email.value, password.value)
@@ -83,6 +85,24 @@ async function submitEmail() {
       </button>
 
       <form v-else class="email-form" @submit.prevent="submitEmail">
+        <template v-if="isSignUp">
+          <input
+            v-model="firstName"
+            type="text"
+            :placeholder="t('firstNamePlaceholder')"
+            class="input-field"
+            required
+            autocomplete="given-name"
+          />
+          <input
+            v-model="lastName"
+            type="text"
+            :placeholder="t('lastNamePlaceholder')"
+            class="input-field"
+            required
+            autocomplete="family-name"
+          />
+        </template>
         <input
           v-model="email"
           type="email"
@@ -98,7 +118,7 @@ async function submitEmail() {
           class="input-field"
           required
           minlength="6"
-          autocomplete="current-password"
+          :autocomplete="isSignUp ? 'new-password' : 'current-password'"
         />
 
         <p v-if="emailSuccess" class="login-success" role="status">{{ emailSuccess }}</p>

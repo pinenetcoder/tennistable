@@ -51,8 +51,18 @@ export const useAuthStore = defineStore('auth', () => {
     if (error) throw error
   }
 
-  async function signUpWithEmail(email, password) {
-    const { error } = await supabase.auth.signUp({ email, password })
+  async function signUpWithEmail(email, password, firstName, lastName) {
+    const { error } = await supabase.auth.signUp({
+      email,
+      password,
+      options: {
+        data: {
+          full_name: `${firstName} ${lastName}`,
+          first_name: firstName,
+          last_name: lastName
+        }
+      }
+    })
     if (error) throw error
   }
 
