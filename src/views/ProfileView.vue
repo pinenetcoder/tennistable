@@ -3,9 +3,11 @@ import { watch, computed } from 'vue'
 import { useAuthStore } from '../stores/auth'
 import { useBookingStore } from '../stores/bookings'
 import { COURTS } from '../courts'
+import { useI18n } from '../i18n'
 
 const authStore = useAuthStore()
 const bookingStore = useBookingStore()
+const { t, dateLocale, courtName: localCourtName } = useI18n()
 
 watch(() => authStore.user, (u) => {
   if (u) bookingStore.fetchByUser(u.uid)
@@ -22,16 +24,17 @@ const past = computed(() =>
 )
 
 function courtName(id) {
-  return COURTS.find(c => c.id === id)?.name || `Court ${id}`
+  const court = COURTS.find(c => c.id === id)
+  return court ? localCourtName(court) : `${t('courtPrefix')} ${id}`
 }
 
 function formatDate(dateStr) {
   const d = new Date(dateStr + 'T00:00:00')
-  return d.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' })
+  return d.toLocaleDateString(dateLocale.value, { weekday: 'short', month: 'short', day: 'numeric' })
 }
 
 async function cancel(bookingId) {
-  if (confirm('Cancel this booking?')) {
+  if (confirm(t('cancelBookingConfirm'))) {
     await bookingStore.cancelBooking(bookingId)
     await bookingStore.fetchByUser(authStore.user.uid)
   }
@@ -54,7 +57,7 @@ async function cancel(bookingId) {
       </div>
       <div class="profile-stat">
         <span class="stat-number">{{ upcoming.length }}</span>
-        <span class="stat-label">Upcoming</span>
+        <span class="stat-label">{{ t('upcoming') }}</span>
       </div>
     </div>
 
@@ -67,7 +70,7 @@ async function cancel(bookingId) {
           <line x1="8" y1="2" x2="8" y2="6"/>
           <line x1="3" y1="10" x2="21" y2="10"/>
         </svg>
-        <h2>Upcoming Reservations</h2>
+        <h2>{{ t('upcomingReservations') }}</h2>
         <span v-if="upcoming.length" class="count">{{ upcoming.length }}</span>
       </div>
       <div v-if="upcoming.length" class="booking-list">
@@ -93,7 +96,7 @@ async function cancel(bookingId) {
               <line x1="18" y1="6" x2="6" y2="18"/>
               <line x1="6" y1="6" x2="18" y2="18"/>
             </svg>
-            Cancel
+            {{ t('cancel') }}
           </button>
         </div>
       </div>
@@ -104,8 +107,8 @@ async function cancel(bookingId) {
           <line x1="8" y1="2" x2="8" y2="6"/>
           <line x1="3" y1="10" x2="21" y2="10"/>
         </svg>
-        <p>No upcoming reservations</p>
-        <router-link to="/" class="btn btn-primary btn-sm">Book a Court</router-link>
+        <p>{{ t('noUpcoming') }}</p>
+        <router-link to="/" class="btn btn-primary btn-sm">{{ t('bookACourt') }}</router-link>
       </div>
     </section>
 
@@ -116,7 +119,7 @@ async function cancel(bookingId) {
           <circle cx="12" cy="12" r="10"/>
           <polyline points="12 6 12 12 16 14"/>
         </svg>
-        <h2>History</h2>
+        <h2>{{ t('history') }}</h2>
       </div>
       <div v-if="past.length" class="booking-list">
         <div v-for="b in past" :key="b.id" class="booking-card past">
@@ -136,11 +139,11 @@ async function cancel(bookingId) {
               </div>
             </div>
           </div>
-          <span :class="['status-badge', b.status]">{{ b.status }}</span>
+          <span :class="['status-badge', b.status]">{{ t(b.status) }}</span>
         </div>
       </div>
       <div v-else class="empty-state">
-        <p>No past reservations</p>
+        <p>{{ t('noPast') }}</p>
       </div>
     </section>
   </div>
@@ -152,17 +155,20 @@ async function cancel(bookingId) {
   align-items: center;
   gap: 20px;
   padding: 24px;
-  background: var(--card);
+  background: rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
   border-radius: 16px;
   border: 1px solid var(--border);
   margin-bottom: 32px;
+  box-shadow: var(--shadow-gold);
 }
 
 .profile-avatar {
   width: 56px;
   height: 56px;
   border-radius: 14px;
-  border: 2px solid var(--border);
+  border: 2px solid rgba(201, 168, 76, 0.3);
 }
 
 .profile-info {
@@ -170,10 +176,11 @@ async function cancel(bookingId) {
 }
 
 .profile-info h1 {
-  font-size: 1.2rem;
-  font-weight: 700;
+  font-size: 1.4rem;
+  font-weight: 600;
   margin: 0 0 2px;
   color: var(--fg);
+  font-family: var(--font-heading);
 }
 
 .profile-email {
@@ -187,7 +194,8 @@ async function cancel(bookingId) {
   flex-direction: column;
   align-items: center;
   padding: 12px 20px;
-  background: var(--primary-light);
+  background: linear-gradient(135deg, rgba(201, 168, 76, 0.15), rgba(201, 168, 76, 0.05));
+  border: 1px solid rgba(201, 168, 76, 0.15);
   border-radius: 12px;
 }
 
@@ -196,6 +204,7 @@ async function cancel(bookingId) {
   font-weight: 700;
   color: var(--primary);
   line-height: 1;
+  font-family: var(--font-heading);
 }
 
 .stat-label {
@@ -203,7 +212,7 @@ async function cancel(bookingId) {
   font-weight: 600;
   color: var(--primary);
   text-transform: uppercase;
-  letter-spacing: 0.03em;
+  letter-spacing: 0.06em;
 }
 
 .bookings-section {
@@ -219,15 +228,16 @@ async function cancel(bookingId) {
 }
 
 .section-header h2 {
-  font-size: 1rem;
-  font-weight: 700;
+  font-size: 1.1rem;
+  font-weight: 600;
   color: var(--fg);
   margin: 0;
+  font-family: var(--font-heading);
 }
 
 .count {
-  background: var(--primary);
-  color: #fff;
+  background: linear-gradient(135deg, #C9A84C, #A68B3A);
+  color: #F0ECE3;
   font-size: 0.7rem;
   padding: 2px 8px;
   border-radius: 10px;
@@ -245,18 +255,19 @@ async function cancel(bookingId) {
   align-items: center;
   justify-content: space-between;
   padding: 16px;
-  background: var(--card);
+  background: rgba(255, 255, 255, 0.03);
   border-radius: 12px;
   border: 1px solid var(--border);
-  transition: border-color var(--transition-base);
+  transition: all var(--transition-base);
 }
 
 .booking-card:hover {
   border-color: var(--border-hover);
+  box-shadow: 0 0 16px rgba(201, 168, 76, 0.06);
 }
 
 .booking-card.past {
-  opacity: 0.65;
+  opacity: 0.55;
 }
 
 .booking-left {
@@ -268,7 +279,8 @@ async function cancel(bookingId) {
 .booking-court-badge {
   width: 40px;
   height: 40px;
-  background: var(--primary-light);
+  background: linear-gradient(135deg, rgba(201, 168, 76, 0.12), rgba(201, 168, 76, 0.04));
+  border: 1px solid rgba(201, 168, 76, 0.12);
   border-radius: 10px;
   display: flex;
   align-items: center;
@@ -278,7 +290,8 @@ async function cancel(bookingId) {
 }
 
 .booking-court-badge.muted {
-  background: var(--muted);
+  background: rgba(255, 255, 255, 0.04);
+  border-color: rgba(255, 255, 255, 0.06);
   color: var(--muted-fg);
 }
 
@@ -302,8 +315,9 @@ async function cancel(bookingId) {
 }
 
 .booking-divider {
-  color: var(--border);
+  color: var(--muted-fg);
   font-size: 0.8rem;
+  opacity: 0.4;
 }
 
 .status-badge {
@@ -317,11 +331,13 @@ async function cancel(bookingId) {
 .status-badge.active {
   background: var(--primary-light);
   color: var(--primary);
+  border: 1px solid rgba(201, 168, 76, 0.15);
 }
 
 .status-badge.cancelled {
   background: var(--destructive-light);
   color: var(--destructive);
+  border: 1px solid var(--destructive-border);
 }
 
 .empty-state {
@@ -329,7 +345,7 @@ async function cancel(bookingId) {
   font-size: 0.9rem;
   text-align: center;
   padding: 40px;
-  background: var(--card);
+  background: rgba(255, 255, 255, 0.03);
   border-radius: 12px;
   border: 1px solid var(--border);
   display: flex;
@@ -339,7 +355,7 @@ async function cancel(bookingId) {
 }
 
 .empty-state svg {
-  color: var(--border-hover);
+  color: var(--muted-fg);
 }
 
 .empty-state p {
@@ -347,9 +363,45 @@ async function cancel(bookingId) {
 }
 
 @media (max-width: 640px) {
-  .profile-card { flex-wrap: wrap; padding: 16px; gap: 12px; }
-  .profile-stat { flex-direction: row; gap: 8px; }
+  .profile-card {
+    flex-direction: column;
+    text-align: center;
+    padding: 20px 16px;
+    gap: 12px;
+  }
+  .profile-avatar { width: 52px; height: 52px; }
+  .profile-info h1 { font-size: 1.2rem; }
+  .profile-email { font-size: 0.8rem; }
+  .profile-stat {
+    flex-direction: row;
+    gap: 8px;
+    width: 100%;
+    justify-content: center;
+    padding: 10px 16px;
+  }
+
+  .bookings-section { margin-bottom: 24px; }
+  .section-header h2 { font-size: 1rem; }
+
+  .booking-card {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+    padding: 14px;
+  }
+
+  .booking-left { gap: 10px; }
+  .booking-court-badge { width: 36px; height: 36px; }
+  .booking-court { font-size: 0.85rem; }
   .booking-meta { flex-direction: column; gap: 0; }
   .booking-divider { display: none; }
+  .booking-date, .booking-time { font-size: 0.78rem; }
+
+  .booking-card .btn { width: 100%; justify-content: center; }
+
+  .status-badge { align-self: flex-start; }
+
+  .empty-state { padding: 28px 16px; }
+  .empty-state p { font-size: 0.85rem; }
 }
 </style>

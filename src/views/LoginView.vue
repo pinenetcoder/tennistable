@@ -2,10 +2,12 @@
 import { useAuthStore } from '../stores/auth'
 import { useRouter, useRoute } from 'vue-router'
 import { ref } from 'vue'
+import { useI18n } from '../i18n'
 
 const authStore = useAuthStore()
 const router = useRouter()
 const route = useRoute()
+const { t } = useI18n()
 const loading = ref(false)
 const error = ref('')
 
@@ -16,7 +18,7 @@ async function signIn() {
     await authStore.signInWithGoogle()
     router.push(route.query.redirect || '/')
   } catch (err) {
-    error.value = 'Sign in failed. Please try again.'
+    error.value = t('signInFailed')
     console.error('Sign in failed:', err)
   } finally {
     loading.value = false
@@ -28,14 +30,10 @@ async function signIn() {
   <div class="login-page">
     <div class="login-card">
       <div class="login-icon-wrapper">
-        <svg class="login-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-          <circle cx="12" cy="12" r="10"/>
-          <path d="M18.09 5.91C14.25 9.75 9.75 14.25 5.91 18.09"/>
-          <path d="M5.91 5.91C9.75 9.75 14.25 14.25 18.09 18.09"/>
-        </svg>
+        <img class="login-icon" src="/stork-logo.svg" alt="Tennis TimeTable logo" />
       </div>
-      <h1>Tennis Club</h1>
-      <p class="login-subtitle">Sign in to book courts and manage your reservations</p>
+      <h1>{{ t('brandName') }}</h1>
+      <p class="login-subtitle">{{ t('loginSubtitle') }}</p>
 
       <p v-if="error" class="login-error" role="alert">{{ error }}</p>
 
@@ -47,7 +45,7 @@ async function signIn() {
           <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/>
         </svg>
         <div v-else class="spinner spinner-sm"></div>
-        {{ loading ? 'Signing in...' : 'Sign in with Google' }}
+        {{ loading ? t('signingIn') : t('signInWithGoogle') }}
       </button>
     </div>
   </div>
@@ -64,43 +62,52 @@ async function signIn() {
 .login-card {
   text-align: center;
   padding: 48px;
-  background: var(--card);
-  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border-radius: 20px;
   border: 1px solid var(--border);
-  box-shadow: var(--shadow);
+  box-shadow: var(--shadow-lg), var(--shadow-gold);
   max-width: 420px;
   width: 100%;
 }
 
 .login-icon-wrapper {
-  width: 64px;
-  height: 64px;
-  background: var(--primary-light);
-  border-radius: 16px;
+  width: 72px;
+  height: 72px;
+  background: linear-gradient(135deg, rgba(201, 168, 76, 0.15), rgba(201, 168, 76, 0.05));
+  border: 1px solid rgba(201, 168, 76, 0.2);
+  border-radius: 20px;
   display: flex;
   align-items: center;
   justify-content: center;
-  margin: 0 auto 20px;
+  margin: 0 auto 24px;
 }
 
 .login-icon {
   width: 36px;
   height: 36px;
   color: var(--primary);
+  filter: drop-shadow(0 0 8px rgba(201, 168, 76, 0.3));
 }
 
 .login-card h1 {
-  font-size: 1.5rem;
-  font-weight: 700;
+  font-size: 2rem;
+  font-weight: 600;
   color: var(--fg);
   margin: 0 0 8px;
   line-height: 1.3;
+  font-family: var(--font-heading);
+  background: linear-gradient(135deg, #F0ECE3, #C9A84C);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
 .login-subtitle {
   color: var(--muted-fg);
   font-size: 0.9rem;
-  margin: 0 0 32px;
+  margin: 0 0 36px;
   line-height: 1.5;
 }
 
@@ -119,25 +126,27 @@ async function signIn() {
   align-items: center;
   gap: 12px;
   padding: 12px 28px;
-  background: var(--bg-white);
+  background: rgba(255, 255, 255, 0.06);
   border: 1px solid var(--border);
-  border-radius: 10px;
+  border-radius: 12px;
   font-size: 0.95rem;
   font-weight: 600;
   color: var(--fg);
   cursor: pointer;
-  transition: border-color var(--transition-base), box-shadow var(--transition-base);
+  transition: all var(--transition-base);
   font-family: inherit;
   min-height: 48px;
+  letter-spacing: 0.02em;
 }
 
 .btn-google:hover:not(:disabled) {
   border-color: var(--border-hover);
-  box-shadow: var(--shadow-sm);
+  box-shadow: 0 0 24px rgba(201, 168, 76, 0.12);
+  background: rgba(201, 168, 76, 0.08);
 }
 
 .btn-google:disabled {
-  opacity: 0.6;
+  opacity: 0.5;
   cursor: not-allowed;
 }
 
@@ -145,5 +154,38 @@ async function signIn() {
   width: 18px;
   height: 18px;
   border-width: 2px;
+}
+
+@media (max-width: 640px) {
+  .login-page {
+    min-height: 0;
+    height: calc(100vh - 56px - 72px - 32px);
+    padding: 0 16px;
+  }
+
+  .login-card {
+    padding: 32px 20px;
+    border-radius: 16px;
+  }
+
+  .login-icon-wrapper {
+    width: 60px;
+    height: 60px;
+    margin-bottom: 20px;
+    border-radius: 16px;
+  }
+
+  .login-icon { width: 32px; height: 32px; }
+
+  .login-card h1 { font-size: 1.6rem; }
+  .login-subtitle { font-size: 0.85rem; margin-bottom: 28px; }
+
+  .btn-google {
+    width: 100%;
+    justify-content: center;
+    padding: 14px 20px;
+    font-size: 0.95rem;
+    min-height: 52px;
+  }
 }
 </style>

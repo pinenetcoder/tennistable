@@ -8,6 +8,7 @@ import { useAuthStore } from '../stores/auth'
 import DatePicker from '../components/DatePicker.vue'
 import SlotCell from '../components/SlotCell.vue'
 import BookingModal from '../components/BookingModal.vue'
+import { useI18n } from '../i18n'
 
 const props = defineProps({
   courtId: { type: Number, required: true }
@@ -17,6 +18,7 @@ const router = useRouter()
 const bookingStore = useBookingStore()
 const authStore = useAuthStore()
 const { slots } = useTimeSlots()
+const { t, dateLocale, courtName: localCourtName } = useI18n()
 
 const selectedDate = ref(new Date().toISOString().split('T')[0])
 const modal = ref(null)
@@ -35,7 +37,7 @@ const weekDays = computed(() => {
     d.setDate(monday.getDate() + i)
     days.push({
       date: d.toISOString().split('T')[0],
-      label: d.toLocaleDateString('en-US', { weekday: 'short', day: 'numeric' }),
+      label: d.toLocaleDateString(dateLocale.value, { weekday: 'short', day: 'numeric' }),
       isToday: d.toISOString().split('T')[0] === new Date().toISOString().split('T')[0]
     })
   }
@@ -85,7 +87,7 @@ async function confirmBooking() {
 }
 
 async function handleCancel(bookingId) {
-  if (confirm('Cancel this booking?')) {
+  if (confirm(t('cancelBookingConfirm'))) {
     await bookingStore.cancelBooking(bookingId)
     await bookingStore.fetchByCourtAndDate(props.courtId, selectedDate.value)
   }
@@ -99,11 +101,10 @@ async function handleCancel(bookingId) {
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <polyline points="15 18 9 12 15 6"/>
         </svg>
-        All Courts
+        {{ t('allCourts') }}
       </router-link>
       <div class="court-title-row">
-        <h1>{{ court?.name }}</h1>
-        <span class="surface-tag">{{ court?.surface }}</span>
+        <h1>{{ localCourtName(court) }}</h1>
       </div>
     </div>
 
@@ -119,7 +120,7 @@ async function handleCancel(bookingId) {
             <rect x="3" y="4" width="18" height="18" rx="2"/>
             <line x1="3" y1="10" x2="21" y2="10"/>
           </svg>
-          Day
+          {{ t('day') }}
         </button>
         <button
           :class="['toggle-btn', { active: viewMode === 'week' }]"
@@ -132,7 +133,7 @@ async function handleCancel(bookingId) {
             <line x1="3" y1="10" x2="21" y2="10"/>
             <line x1="9" y1="4" x2="9" y2="22"/>
           </svg>
-          Week
+          {{ t('week') }}
         </button>
       </div>
       <DatePicker v-model="selectedDate" />
@@ -178,9 +179,9 @@ async function handleCancel(bookingId) {
               @click="!isPastSlot(slot.start, day.date) && handleBook(slot)"
               role="button"
               :tabindex="isPastSlot(slot.start, day.date) ? -1 : 0"
-              :aria-label="isPastSlot(slot.start, day.date) ? 'Past slot' : 'Available — click to book'"
+              :aria-label="isPastSlot(slot.start, day.date) ? t('pastTimeSlot') : t('availableClickToBook')"
             >
-              {{ isPastSlot(slot.start, day.date) ? '' : 'Free' }}
+              {{ isPastSlot(slot.start, day.date) ? '' : t('free') }}
             </div>
           </div>
         </div>
@@ -228,22 +229,23 @@ async function handleCancel(bookingId) {
 }
 
 .court-title-row h1 {
-  font-size: 1.5rem;
-  font-weight: 700;
+  font-size: 1.8rem;
+  font-weight: 600;
   margin: 0;
   color: var(--fg);
+  font-family: var(--font-heading);
 }
 
 .surface-tag {
   font-size: 0.7rem;
   font-weight: 600;
-  color: var(--muted-fg);
+  color: var(--primary);
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  background: var(--muted);
+  background: var(--primary-light);
   padding: 4px 10px;
   border-radius: 6px;
-  border: 1px solid var(--border);
+  border: 1px solid rgba(201, 168, 76, 0.15);
 }
 
 .court-controls {
@@ -259,7 +261,7 @@ async function handleCancel(bookingId) {
   border: 1px solid var(--border);
   border-radius: 10px;
   overflow: hidden;
-  background: var(--bg-white);
+  background: var(--glass-bg);
 }
 
 .toggle-btn {
@@ -275,17 +277,17 @@ async function handleCancel(bookingId) {
   color: var(--muted-fg);
   font-family: inherit;
   min-height: 40px;
-  transition: color var(--transition-base), background var(--transition-base);
+  transition: all var(--transition-base);
 }
 
 .toggle-btn:hover:not(.active) {
   color: var(--fg);
-  background: var(--muted);
+  background: rgba(255, 255, 255, 0.04);
 }
 
 .toggle-btn.active {
-  background: var(--primary);
-  color: #fff;
+  background: linear-gradient(135deg, #C9A84C, #A68B3A);
+  color: #F0ECE3;
 }
 
 /* Day view */
@@ -294,7 +296,9 @@ async function handleCancel(bookingId) {
   flex-direction: column;
   gap: 6px;
   max-width: 520px;
-  background: var(--card);
+  background: rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
   border-radius: 12px;
   border: 1px solid var(--border);
   padding: 16px;
@@ -317,7 +321,9 @@ async function handleCancel(bookingId) {
 /* Week view */
 .week-grid-card {
   overflow-x: auto;
-  background: var(--card);
+  background: rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
   border-radius: 12px;
   border: 1px solid var(--border);
   padding: 16px;
@@ -355,6 +361,7 @@ async function handleCancel(bookingId) {
 .header-cell.today {
   color: var(--primary);
   background: var(--primary-light);
+  border: 1px solid rgba(201, 168, 76, 0.15);
   border-radius: 6px;
 }
 
@@ -376,25 +383,58 @@ async function handleCancel(bookingId) {
   font-weight: 600;
   background: var(--primary-light);
   color: var(--primary);
-  border: 1px solid #BBF7D0;
+  border: 1px solid rgba(201, 168, 76, 0.15);
   cursor: pointer;
   min-height: 36px;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: transform var(--transition-fast), background var(--transition-base);
+  transition: all var(--transition-base);
 }
 
 .week-slot.past {
-  background: var(--muted);
-  color: var(--border-hover);
-  border-color: var(--border);
+  background: rgba(255, 255, 255, 0.02);
+  color: var(--muted-fg);
+  border-color: rgba(255, 255, 255, 0.04);
   cursor: default;
 }
 
 .week-slot:not(.past):hover {
   transform: translateY(-1px);
-  background: #DCFCE7;
+  background: rgba(201, 168, 76, 0.18);
   border-color: var(--primary);
+  box-shadow: 0 0 12px rgba(201, 168, 76, 0.1);
+}
+
+@media (max-width: 640px) {
+  .court-header { margin-bottom: 16px; }
+  .court-title-row h1 { font-size: 1.4rem; }
+
+  .court-controls {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+  }
+
+  .view-toggle { width: 100%; }
+  .toggle-btn { flex: 1; justify-content: center; padding: 10px 12px; min-height: 44px; }
+
+  .date-picker { width: 100%; justify-content: center; }
+
+  /* Day view */
+  .day-grid-card { padding: 12px; }
+  .day-row { grid-template-columns: 80px 1fr; gap: 8px; }
+  .time-label { font-size: 0.8rem; }
+
+  /* Week view: force horizontal scroll with better sizing */
+  .week-grid-card { padding: 10px; }
+  .week-grid { min-width: 520px; }
+  .week-header, .week-row {
+    grid-template-columns: 46px repeat(7, 1fr);
+    gap: 3px;
+  }
+  .header-cell { font-size: 0.7rem; padding: 4px 2px; }
+  .time-col { font-size: 0.65rem; }
+  .week-slot { padding: 4px; font-size: 0.6rem; min-height: 32px; }
 }
 </style>

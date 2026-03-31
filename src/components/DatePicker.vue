@@ -1,14 +1,17 @@
 <script setup>
 import { computed } from 'vue'
+import { useI18n } from '../i18n'
 
 const props = defineProps({
   modelValue: { type: String, required: true }
 })
 const emit = defineEmits(['update:modelValue'])
 
+const { t, dateLocale } = useI18n()
+
 const displayDate = computed(() => {
   const d = new Date(props.modelValue + 'T00:00:00')
-  return d.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' })
+  return d.toLocaleDateString(dateLocale.value, { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' })
 })
 
 const isToday = computed(() => {
@@ -28,16 +31,16 @@ function goToday() {
 
 <template>
   <div class="date-picker">
-    <button class="dp-btn" @click="shift(-1)" aria-label="Previous day">
+    <button class="dp-btn" @click="shift(-1)" :aria-label="t('previousDay')">
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
         <polyline points="15 18 9 12 15 6"/>
       </svg>
     </button>
     <div class="dp-center">
       <span class="dp-date">{{ displayDate }}</span>
-      <button v-if="!isToday" class="dp-today" @click="goToday">Today</button>
+      <button v-if="!isToday" class="dp-today" @click="goToday">{{ t('today') }}</button>
     </div>
-    <button class="dp-btn" @click="shift(1)" aria-label="Next day">
+    <button class="dp-btn" @click="shift(1)" :aria-label="t('nextDay')">
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
         <polyline points="9 18 15 12 9 6"/>
       </svg>
@@ -56,14 +59,14 @@ function goToday() {
   width: 40px;
   height: 40px;
   border: 1px solid var(--border);
-  background: var(--bg-white);
+  background: var(--glass-bg);
   border-radius: 10px;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
   color: var(--muted-fg);
-  transition: color var(--transition-base), border-color var(--transition-base), background var(--transition-base);
+  transition: all var(--transition-base);
 }
 
 .dp-btn:hover {
@@ -103,6 +106,10 @@ function goToday() {
 }
 
 @media (max-width: 640px) {
-  .dp-date { font-size: 0.8rem; }
+  .date-picker { gap: 8px; width: 100%; }
+  .dp-btn { width: 44px; height: 44px; flex-shrink: 0; }
+  .dp-center { flex: 1; min-width: 0; }
+  .dp-date { font-size: 0.85rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; }
+  .dp-today { font-size: 0.7rem; min-height: 28px; padding: 4px 12px; }
 }
 </style>

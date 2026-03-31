@@ -1,5 +1,6 @@
 <script setup>
 import { computed } from 'vue'
+import { useI18n } from '../i18n'
 
 const props = defineProps({
   booking: { type: Object, default: null },
@@ -7,6 +8,7 @@ const props = defineProps({
   isPast: { type: Boolean, default: false }
 })
 const emit = defineEmits(['book', 'cancel'])
+const { t } = useI18n()
 
 const status = computed(() => {
   if (!props.booking) return 'free'
@@ -15,16 +17,16 @@ const status = computed(() => {
 })
 
 const label = computed(() => {
-  if (status.value === 'free') return props.isPast ? '' : 'Available'
-  if (status.value === 'mine') return 'My Booking'
-  return props.booking?.user_name || 'Booked'
+  if (status.value === 'free') return props.isPast ? '' : t('available')
+  if (status.value === 'mine') return t('myBooking')
+  return props.booking?.user_name || t('booked')
 })
 
 const ariaLabel = computed(() => {
-  if (props.isPast) return 'Past time slot'
-  if (status.value === 'free') return 'Available — click to book'
-  if (status.value === 'mine') return 'Your booking — click to cancel'
-  return `Booked by ${props.booking?.user_name || 'someone'}`
+  if (props.isPast) return t('pastTimeSlot')
+  if (status.value === 'free') return t('availableClickToBook')
+  if (status.value === 'mine') return t('yourBookingClickCancel')
+  return `${t('bookedBy')} ${props.booking?.user_name || 'someone'}`
 })
 
 function handleClick() {
@@ -68,7 +70,7 @@ function handleClick() {
   font-size: 0.75rem;
   font-weight: 600;
   cursor: pointer;
-  transition: transform var(--transition-fast), box-shadow var(--transition-base), background var(--transition-base);
+  transition: all var(--transition-base);
   min-height: 44px;
   display: flex;
   align-items: center;
@@ -78,17 +80,17 @@ function handleClick() {
 
 .slot-cell:not(.past):not(.booked):hover {
   transform: translateY(-1px);
-  box-shadow: var(--shadow-sm);
+  box-shadow: 0 0 16px rgba(201, 168, 76, 0.1);
 }
 
 .slot-cell.free {
   background: var(--primary-light);
   color: var(--primary);
-  border: 1px solid #BBF7D0;
+  border: 1px solid rgba(201, 168, 76, 0.15);
 }
 
 .slot-cell.free:hover {
-  background: #DCFCE7;
+  background: rgba(201, 168, 76, 0.18);
   border-color: var(--primary);
 }
 
@@ -106,14 +108,14 @@ function handleClick() {
 }
 
 .slot-cell.mine:hover {
-  background: #DBEAFE;
+  background: rgba(107, 159, 232, 0.15);
   border-color: var(--info);
 }
 
 .slot-cell.past {
-  background: var(--muted);
-  color: var(--border-hover);
-  border: 1px solid var(--border);
+  background: rgba(255, 255, 255, 0.02);
+  color: var(--muted-fg);
+  border: 1px solid rgba(255, 255, 255, 0.04);
   cursor: default;
 }
 
