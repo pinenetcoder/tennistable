@@ -10,6 +10,12 @@ const route = useRoute()
 const { t } = useI18n()
 const loading = ref(false)
 const error = ref('')
+const showEmailForm = ref(false)
+const isSignUp = ref(false)
+const email = ref('')
+const password = ref('')
+const emailLoading = ref(false)
+const emailSuccess = ref('')
 
 async function signIn() {
   loading.value = true
@@ -22,6 +28,26 @@ async function signIn() {
     console.error('Sign in failed:', err)
   } finally {
     loading.value = false
+  }
+}
+
+async function submitEmail() {
+  emailLoading.value = true
+  error.value = ''
+  emailSuccess.value = ''
+  try {
+    if (isSignUp.value) {
+      await authStore.signUpWithEmail(email.value, password.value)
+      emailSuccess.value = t('checkEmail')
+    } else {
+      await authStore.signInWithEmail(email.value, password.value)
+      router.push(route.query.redirect || '/')
+    }
+  } catch (err) {
+    error.value = err.message
+    console.error('Email auth failed:', err)
+  } finally {
+    emailLoading.value = false
   }
 }
 </script>
@@ -47,6 +73,48 @@ async function signIn() {
         <div v-else class="spinner spinner-sm"></div>
         {{ loading ? t('signingIn') : t('signInWithGoogle') }}
       </button>
+
+      <div class="divider">
+        <span>{{ t('or') }}</span>
+      </div>
+
+      <button v-if="!showEmailForm" class="btn-email" @click="showEmailForm = true">
+        {{ t('signInWithEmail') }}
+      </button>
+
+      <form v-else class="email-form" @submit.prevent="submitEmail">
+        <input
+          v-model="email"
+          type="email"
+          :placeholder="t('emailPlaceholder')"
+          class="input-field"
+          required
+          autocomplete="email"
+        />
+        <input
+          v-model="password"
+          type="password"
+          :placeholder="t('passwordPlaceholder')"
+          class="input-field"
+          required
+          minlength="6"
+          autocomplete="current-password"
+        />
+
+        <p v-if="emailSuccess" class="login-success" role="status">{{ emailSuccess }}</p>
+
+        <button type="submit" class="btn-submit" :disabled="emailLoading">
+          <div v-if="emailLoading" class="spinner spinner-sm"></div>
+          {{ emailLoading ? t('signingIn') : (isSignUp ? t('signUp') : t('signInBtn')) }}
+        </button>
+
+        <p class="toggle-mode">
+          {{ isSignUp ? t('alreadyHaveAccount') : t('noAccount') }}
+          <a href="#" @click.prevent="isSignUp = !isSignUp; error = ''; emailSuccess = ''">
+            {{ isSignUp ? t('signInBtn') : t('signUp') }}
+          </a>
+        </p>
+      </form>
     </div>
   </div>
 </template>
@@ -148,6 +216,131 @@ async function signIn() {
 .btn-google:disabled {
   opacity: 0.5;
   cursor: not-allowed;
+}
+
+.divider {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin: 24px 0;
+  color: var(--muted-fg);
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.divider::before,
+.divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--border);
+}
+
+.btn-email {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px 28px;
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--muted-fg);
+  cursor: pointer;
+  transition: all var(--transition-base);
+  font-family: inherit;
+  min-height: 48px;
+  width: 100%;
+}
+
+.btn-email:hover {
+  border-color: var(--border-hover);
+  color: var(--fg);
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.email-form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.input-field {
+  padding: 12px 16px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  font-size: 0.9rem;
+  color: var(--fg);
+  font-family: inherit;
+  outline: none;
+  transition: border-color var(--transition-base);
+}
+
+.input-field::placeholder {
+  color: var(--muted-fg);
+}
+
+.input-field:focus {
+  border-color: var(--primary);
+}
+
+.btn-submit {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px 28px;
+  background: linear-gradient(135deg, rgba(201, 168, 76, 0.2), rgba(201, 168, 76, 0.1));
+  border: 1px solid rgba(201, 168, 76, 0.3);
+  border-radius: 12px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--fg);
+  cursor: pointer;
+  transition: all var(--transition-base);
+  font-family: inherit;
+  min-height: 48px;
+  margin-top: 4px;
+}
+
+.btn-submit:hover:not(:disabled) {
+  background: linear-gradient(135deg, rgba(201, 168, 76, 0.3), rgba(201, 168, 76, 0.15));
+  box-shadow: 0 0 24px rgba(201, 168, 76, 0.12);
+}
+
+.btn-submit:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.toggle-mode {
+  color: var(--muted-fg);
+  font-size: 0.8rem;
+  margin: 4px 0 0;
+}
+
+.toggle-mode a {
+  color: var(--primary);
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.toggle-mode a:hover {
+  text-decoration: underline;
+}
+
+.login-success {
+  color: var(--success, #4ade80);
+  font-size: 0.85rem;
+  margin: 0;
+  padding: 10px 16px;
+  background: rgba(74, 222, 128, 0.08);
+  border-radius: 8px;
+  border: 1px solid rgba(74, 222, 128, 0.2);
 }
 
 .spinner-sm {
