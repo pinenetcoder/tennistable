@@ -110,7 +110,7 @@ function goTab(tab) {
   width: 48px;
   height: 48px;
   color: var(--primary);
-  filter: drop-shadow(0 0 12px rgba(201, 168, 76, 0.4));
+  filter: drop-shadow(0 0 12px var(--primary-glow-active));
 }
 
 /* Bottom tab bar — mobile only */
@@ -130,7 +130,7 @@ function goTab(tab) {
     left: 0;
     right: 0;
     z-index: var(--z-sticky);
-    background: rgba(8, 8, 12, 0.92);
+    background: var(--nav-bg-solid);
     backdrop-filter: blur(20px) saturate(1.2);
     -webkit-backdrop-filter: blur(20px) saturate(1.2);
     border-top: 1px solid var(--border);
@@ -162,7 +162,7 @@ function goTab(tab) {
   }
 
   .tab-item:active {
-    background: rgba(201, 168, 76, 0.08);
+    background: var(--primary-glow-sm);
   }
 
   .tab-label {

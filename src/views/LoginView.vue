@@ -163,8 +163,8 @@ async function submitEmail() {
 .login-icon-wrapper {
   width: 72px;
   height: 72px;
-  background: linear-gradient(135deg, rgba(201, 168, 76, 0.15), rgba(201, 168, 76, 0.05));
-  border: 1px solid rgba(201, 168, 76, 0.2);
+  background: linear-gradient(135deg, var(--primary-glow-md), var(--primary-light));
+  border: 1px solid var(--primary-glow-lg);
   border-radius: 20px;
   display: flex;
   align-items: center;
@@ -176,7 +176,7 @@ async function submitEmail() {
   width: 36px;
   height: 36px;
   color: var(--primary);
-  filter: drop-shadow(0 0 8px rgba(201, 168, 76, 0.3));
+  filter: drop-shadow(0 0 8px var(--primary-glow-xl));
 }
 
 .login-card h1 {
@@ -186,7 +186,7 @@ async function submitEmail() {
   margin: 0 0 8px;
   line-height: 1.3;
   font-family: var(--font-heading);
-  background: linear-gradient(135deg, #F0ECE3, #C9A84C);
+  background: var(--primary-gradient-text);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -229,8 +229,8 @@ async function submitEmail() {
 
 .btn-google:hover:not(:disabled) {
   border-color: var(--border-hover);
-  box-shadow: 0 0 24px rgba(201, 168, 76, 0.12);
-  background: rgba(201, 168, 76, 0.08);
+  box-shadow: 0 0 24px var(--primary-glow);
+  background: var(--primary-glow-sm);
 }
 
 .btn-google:disabled {
@@ -314,8 +314,8 @@ async function submitEmail() {
   justify-content: center;
   gap: 8px;
   padding: 12px 28px;
-  background: linear-gradient(135deg, rgba(201, 168, 76, 0.2), rgba(201, 168, 76, 0.1));
-  border: 1px solid rgba(201, 168, 76, 0.3);
+  background: linear-gradient(135deg, var(--primary-glow-lg), var(--primary-glow));
+  border: 1px solid var(--primary-glow-xl);
   border-radius: 12px;
   font-size: 0.95rem;
   font-weight: 600;
@@ -328,8 +328,8 @@ async function submitEmail() {
 }
 
 .btn-submit:hover:not(:disabled) {
-  background: linear-gradient(135deg, rgba(201, 168, 76, 0.3), rgba(201, 168, 76, 0.15));
-  box-shadow: 0 0 24px rgba(201, 168, 76, 0.12);
+  background: linear-gradient(135deg, var(--primary-glow-xl), var(--primary-glow-md));
+  box-shadow: 0 0 24px var(--primary-glow);
 }
 
 .btn-submit:disabled {

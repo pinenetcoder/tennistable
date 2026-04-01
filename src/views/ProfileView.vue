@@ -168,7 +168,7 @@ async function cancel(bookingId) {
   width: 56px;
   height: 56px;
   border-radius: 14px;
-  border: 2px solid rgba(201, 168, 76, 0.3);
+  border: 2px solid var(--avatar-border);
 }
 
 .profile-info {
@@ -194,8 +194,8 @@ async function cancel(bookingId) {
   flex-direction: column;
   align-items: center;
   padding: 12px 20px;
-  background: linear-gradient(135deg, rgba(201, 168, 76, 0.15), rgba(201, 168, 76, 0.05));
-  border: 1px solid rgba(201, 168, 76, 0.15);
+  background: linear-gradient(135deg, var(--primary-glow-md), var(--primary-light));
+  border: 1px solid var(--primary-glow-md);
   border-radius: 12px;
 }
 
@@ -236,8 +236,8 @@ async function cancel(bookingId) {
 }
 
 .count {
-  background: linear-gradient(135deg, #C9A84C, #A68B3A);
-  color: #F0ECE3;
+  background: var(--primary-gradient);
+  color: var(--primary-on);
   font-size: 0.7rem;
   padding: 2px 8px;
   border-radius: 10px;
@@ -263,7 +263,7 @@ async function cancel(bookingId) {
 
 .booking-card:hover {
   border-color: var(--border-hover);
-  box-shadow: 0 0 16px rgba(201, 168, 76, 0.06);
+  box-shadow: 0 0 16px var(--primary-glow-sm);
 }
 
 .booking-card.past {
@@ -279,8 +279,8 @@ async function cancel(bookingId) {
 .booking-court-badge {
   width: 40px;
   height: 40px;
-  background: linear-gradient(135deg, rgba(201, 168, 76, 0.12), rgba(201, 168, 76, 0.04));
-  border: 1px solid rgba(201, 168, 76, 0.12);
+  background: linear-gradient(135deg, var(--primary-glow), var(--primary-light));
+  border: 1px solid var(--primary-glow);
   border-radius: 10px;
   display: flex;
   align-items: center;
@@ -331,7 +331,7 @@ async function cancel(bookingId) {
 .status-badge.active {
   background: var(--primary-light);
   color: var(--primary);
-  border: 1px solid rgba(201, 168, 76, 0.15);
+  border: 1px solid var(--primary-glow-md);
 }
 
 .status-badge.cancelled {

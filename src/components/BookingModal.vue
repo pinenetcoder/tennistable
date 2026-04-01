@@ -123,7 +123,7 @@ function handleKeydown(e) {
 }
 
 .modal-card {
-  background: rgba(16, 16, 22, 0.95);
+  background: var(--modal-bg);
   backdrop-filter: blur(24px);
   -webkit-backdrop-filter: blur(24px);
   border-radius: 20px;
@@ -189,8 +189,8 @@ function handleKeydown(e) {
 .detail-icon {
   width: 36px;
   height: 36px;
-  background: linear-gradient(135deg, rgba(201, 168, 76, 0.12), rgba(201, 168, 76, 0.04));
-  border: 1px solid rgba(201, 168, 76, 0.12);
+  background: linear-gradient(135deg, var(--primary-glow), var(--primary-light));
+  border: 1px solid var(--primary-glow);
   border-radius: 8px;
   display: flex;
   align-items: center;

@@ -80,17 +80,17 @@ function handleClick() {
 
 .slot-cell:not(.past):not(.booked):hover {
   transform: translateY(-1px);
-  box-shadow: 0 0 16px rgba(201, 168, 76, 0.1);
+  box-shadow: 0 0 16px var(--primary-glow);
 }
 
 .slot-cell.free {
   background: var(--primary-light);
   color: var(--primary);
-  border: 1px solid rgba(201, 168, 76, 0.15);
+  border: 1px solid var(--primary-glow-md);
 }
 
 .slot-cell.free:hover {
-  background: rgba(201, 168, 76, 0.18);
+  background: var(--primary-glow-md);
   border-color: var(--primary);
 }
 

@@ -3,10 +3,12 @@ import { ref } from 'vue'
 import { useAuthStore } from '../stores/auth'
 import { useRouter } from 'vue-router'
 import { useI18n } from '../i18n'
+import { useTheme } from '../composables/useTheme'
 
 const authStore = useAuthStore()
 const router = useRouter()
 const { t, locale, setLocale, locales } = useI18n()
+const { theme, toggleTheme } = useTheme()
 const menuOpen = ref(false)
 const langOpen = ref(false)
 
@@ -54,6 +56,24 @@ async function handleSignOut() {
       </router-link>
 
       <div class="spacer"></div>
+
+      <!-- Theme toggle -->
+      <button class="theme-btn" @click="toggleTheme" :aria-label="theme === 'dark' ? t('lightMode') : t('darkMode')">
+        <svg v-if="theme === 'dark'" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="5"/>
+          <line x1="12" y1="1" x2="12" y2="3"/>
+          <line x1="12" y1="21" x2="12" y2="23"/>
+          <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/>
+          <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+          <line x1="1" y1="12" x2="3" y2="12"/>
+          <line x1="21" y1="12" x2="23" y2="12"/>
+          <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/>
+          <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+        </svg>
+        <svg v-else width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+        </svg>
+      </button>
 
       <!-- Language selector -->
       <div class="lang-dropdown" v-click-outside="closeLang">
@@ -164,8 +184,27 @@ export default {
 </script>
 
 <style scoped>
+.theme-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--glass-bg);
+  cursor: pointer;
+  color: var(--muted-fg);
+  transition: all var(--transition-base);
+}
+
+.theme-btn:hover {
+  border-color: var(--border-hover);
+  color: var(--primary);
+}
+
 .navbar {
-  background: rgba(8, 8, 12, 0.8);
+  background: var(--nav-bg);
   backdrop-filter: blur(20px) saturate(1.2);
   -webkit-backdrop-filter: blur(20px) saturate(1.2);
   border-bottom: 1px solid var(--border);
@@ -205,11 +244,11 @@ export default {
 .brand-icon {
   width: 36px;
   height: 36px;
-  color: #F0ECE3;
+  color: var(--fg);
 }
 
 .brand-text {
-  background: linear-gradient(135deg, #E8D5A3, #C9A84C);
+  background: var(--primary-gradient-text);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -259,7 +298,7 @@ export default {
   position: absolute;
   top: calc(100% + 6px);
   right: 0;
-  background: rgba(16, 16, 22, 0.95);
+  background: var(--dropdown-bg);
   backdrop-filter: blur(24px);
   -webkit-backdrop-filter: blur(24px);
   border: 1px solid var(--border);
@@ -293,8 +332,8 @@ export default {
 }
 
 .lang-option.active {
-  background: linear-gradient(135deg, #C9A84C, #A68B3A);
-  color: #F0ECE3;
+  background: var(--primary-gradient);
+  color: var(--primary-on);
 }
 
 /* Dropdown */
@@ -317,14 +356,14 @@ export default {
 
 .avatar-btn:hover {
   border-color: var(--border-hover);
-  box-shadow: 0 0 20px rgba(201, 168, 76, 0.1);
+  box-shadow: 0 0 20px var(--primary-glow-sm);
 }
 
 .avatar {
   width: 32px;
   height: 32px;
   border-radius: 50%;
-  border: 1.5px solid rgba(201, 168, 76, 0.3);
+  border: 1.5px solid var(--avatar-border);
 }
 
 .avatar-name {
@@ -348,7 +387,7 @@ export default {
   top: calc(100% + 8px);
   right: 0;
   width: 260px;
-  background: rgba(16, 16, 22, 0.95);
+  background: var(--dropdown-bg);
   backdrop-filter: blur(24px);
   -webkit-backdrop-filter: blur(24px);
   border: 1px solid var(--border);
@@ -370,7 +409,7 @@ export default {
   height: 36px;
   border-radius: 50%;
   flex-shrink: 0;
-  border: 1.5px solid rgba(201, 168, 76, 0.3);
+  border: 1.5px solid var(--avatar-border);
 }
 
 .dropdown-name {

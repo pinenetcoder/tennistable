@@ -245,7 +245,7 @@ async function handleCancel(bookingId) {
   background: var(--primary-light);
   padding: 4px 10px;
   border-radius: 6px;
-  border: 1px solid rgba(201, 168, 76, 0.15);
+  border: 1px solid var(--primary-glow-md);
 }
 
 .court-controls {
@@ -286,8 +286,8 @@ async function handleCancel(bookingId) {
 }
 
 .toggle-btn.active {
-  background: linear-gradient(135deg, #C9A84C, #A68B3A);
-  color: #F0ECE3;
+  background: var(--primary-gradient);
+  color: var(--primary-on);
 }
 
 /* Day view */
@@ -361,7 +361,7 @@ async function handleCancel(bookingId) {
 .header-cell.today {
   color: var(--primary);
   background: var(--primary-light);
-  border: 1px solid rgba(201, 168, 76, 0.15);
+  border: 1px solid var(--primary-glow-md);
   border-radius: 6px;
 }
 
@@ -383,7 +383,7 @@ async function handleCancel(bookingId) {
   font-weight: 600;
   background: var(--primary-light);
   color: var(--primary);
-  border: 1px solid rgba(201, 168, 76, 0.15);
+  border: 1px solid var(--primary-glow-md);
   cursor: pointer;
   min-height: 36px;
   display: flex;
@@ -401,9 +401,9 @@ async function handleCancel(bookingId) {
 
 .week-slot:not(.past):hover {
   transform: translateY(-1px);
-  background: rgba(201, 168, 76, 0.18);
+  background: var(--primary-glow-md);
   border-color: var(--primary);
-  box-shadow: 0 0 12px rgba(201, 168, 76, 0.1);
+  box-shadow: 0 0 12px var(--primary-glow);
 }
 
 @media (max-width: 640px) {

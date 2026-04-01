@@ -371,7 +371,7 @@ async function confirmBooking() {
   border-color: var(--border-hover);
   color: var(--primary);
   background: var(--primary-light);
-  box-shadow: 0 0 20px rgba(201, 168, 76, 0.08);
+  box-shadow: 0 0 20px var(--primary-glow-sm);
 }
 
 .stepper-card {
@@ -388,11 +388,11 @@ async function confirmBooking() {
 }
 
 .progress-bar { height: 3px; background: rgba(255, 255, 255, 0.06); }
-.progress-fill { height: 100%; background: linear-gradient(90deg, #A68B3A, #C9A84C, #E8D5A3); border-radius: 0 2px 2px 0; transition: width var(--transition-slow); }
+.progress-fill { height: 100%; background: var(--progress-gradient); border-radius: 0 2px 2px 0; transition: width var(--transition-slow); }
 
 .step-indicators { display: flex; justify-content: center; gap: 10px; padding: 20px 24px 0; }
-.step-dot { width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.75rem; font-weight: 700; border: 2px solid rgba(201, 168, 76, 0.2); color: var(--muted-fg); transition: all var(--transition-base); }
-.step-dot.active { border-color: var(--primary); background: linear-gradient(135deg, #C9A84C, #A68B3A); color: #F0ECE3; }
+.step-dot { width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.75rem; font-weight: 700; border: 2px solid var(--primary-glow-lg); color: var(--muted-fg); transition: all var(--transition-base); }
+.step-dot.active { border-color: var(--primary); background: var(--primary-gradient); color: var(--primary-on); }
 .step-dot.done { border-color: var(--primary); background: var(--primary-light); color: var(--primary); }
 
 .back-btn { display: flex; align-items: center; gap: 4px; background: none; border: none; color: var(--muted-fg); font-size: 0.85rem; font-weight: 500; cursor: pointer; padding: 16px 24px 0; font-family: inherit; transition: color var(--transition-base); }
@@ -400,7 +400,7 @@ async function confirmBooking() {
 
 .step-content { padding: 24px; }
 .step-header { text-align: center; margin-bottom: 24px; }
-.step-icon { color: var(--primary); margin-bottom: 8px; filter: drop-shadow(0 0 6px rgba(201, 168, 76, 0.3)); }
+.step-icon { color: var(--primary); margin-bottom: 8px; filter: drop-shadow(0 0 6px var(--primary-glow-xl)); }
 .step-header h2 { font-size: 1.4rem; font-weight: 600; margin: 0 0 4px; color: var(--fg); font-family: var(--font-heading); }
 .step-desc { color: var(--muted-fg); font-size: 0.875rem; margin: 0; }
 
@@ -408,9 +408,9 @@ async function confirmBooking() {
 .date-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; }
 .date-card { display: flex; flex-direction: column; align-items: center; gap: 2px; padding: 10px 4px; border: 1px solid var(--border); border-radius: 10px; background: var(--glass-bg); cursor: pointer; transition: all var(--transition-base); font-family: inherit; min-height: 44px; }
 .date-card:hover { border-color: var(--border-hover); background: var(--primary-light); }
-.date-card.selected { border-color: var(--primary); background: linear-gradient(135deg, #C9A84C, #A68B3A); color: #F0ECE3; box-shadow: 0 0 20px rgba(201, 168, 76, 0.2); }
+.date-card.selected { border-color: var(--primary); background: var(--primary-gradient); color: var(--primary-on); box-shadow: 0 0 20px var(--primary-glow-lg); }
 .date-card.selected .date-weekday, .date-card.selected .date-month { color: rgba(240, 236, 227, 0.6); }
-.date-card.today { border-color: rgba(201, 168, 76, 0.3); }
+.date-card.today { border-color: var(--primary-glow-xl); }
 .date-weekday { font-size: 0.6rem; font-weight: 600; text-transform: uppercase; color: var(--muted-fg); letter-spacing: 0.03em; }
 .date-num { font-size: 1.1rem; font-weight: 700; line-height: 1; color: var(--fg); }
 .date-month { font-size: 0.6rem; font-weight: 500; color: var(--muted-fg); }
@@ -430,20 +430,20 @@ async function confirmBooking() {
 .duration-card:hover .dur-value { color: var(--primary); }
 .dur-range { font-size: 0.75rem; font-weight: 500; color: var(--muted-fg); }
 
-.dur-badge { display: inline-block; font-size: 0.65rem; font-weight: 700; color: var(--primary); background: var(--primary-light); padding: 2px 8px; border-radius: 6px; margin-left: 6px; vertical-align: middle; border: 1px solid rgba(201, 168, 76, 0.15); }
+.dur-badge { display: inline-block; font-size: 0.65rem; font-weight: 700; color: var(--primary); background: var(--primary-light); padding: 2px 8px; border-radius: 6px; margin-left: 6px; vertical-align: middle; border: 1px solid var(--primary-glow-md); }
 
 /* Court grid */
 .court-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
 .court-card { display: flex; flex-direction: column; align-items: center; gap: 8px; padding: 20px 16px; border: 1px solid var(--border); border-radius: 12px; background: var(--glass-bg); cursor: pointer; font-family: inherit; transition: all var(--transition-base); min-height: 44px; }
-.court-card:hover { border-color: var(--border-hover); background: var(--primary-light); box-shadow: 0 0 20px rgba(201, 168, 76, 0.08); }
-.court-card-icon { width: 44px; height: 44px; border-radius: 12px; background: linear-gradient(135deg, rgba(201, 168, 76, 0.15), rgba(201, 168, 76, 0.05)); border: 1px solid rgba(201, 168, 76, 0.15); display: flex; align-items: center; justify-content: center; color: var(--primary); }
+.court-card:hover { border-color: var(--border-hover); background: var(--primary-light); box-shadow: 0 0 20px var(--primary-glow-sm); }
+.court-card-icon { width: 44px; height: 44px; border-radius: 12px; background: linear-gradient(135deg, var(--primary-glow-md), var(--primary-light)); border: 1px solid var(--primary-glow-md); display: flex; align-items: center; justify-content: center; color: var(--primary); }
 .court-card-name { font-size: 0.95rem; font-weight: 700; color: var(--fg); }
 .court-card-surface { font-size: 0.7rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; color: var(--muted-fg); }
 
 /* Confirm */
 .confirm-details { display: flex; flex-direction: column; gap: 16px; padding: 20px; background: rgba(255, 255, 255, 0.03); border: 1px solid var(--border); border-radius: 14px; margin-bottom: 20px; }
 .confirm-row { display: flex; align-items: center; gap: 12px; }
-.confirm-icon { width: 38px; height: 38px; background: linear-gradient(135deg, rgba(201, 168, 76, 0.12), rgba(201, 168, 76, 0.04)); border: 1px solid rgba(201, 168, 76, 0.12); border-radius: 10px; display: flex; align-items: center; justify-content: center; color: var(--primary); flex-shrink: 0; }
+.confirm-icon { width: 38px; height: 38px; background: linear-gradient(135deg, var(--primary-glow), var(--primary-light)); border: 1px solid var(--primary-glow); border-radius: 10px; display: flex; align-items: center; justify-content: center; color: var(--primary); flex-shrink: 0; }
 .confirm-label { display: block; font-size: 0.7rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted-fg); }
 .confirm-value { font-size: 0.95rem; font-weight: 600; color: var(--fg); }
 .surface-sm { font-size: 0.7rem; font-weight: 500; color: var(--muted-fg); text-transform: uppercase; }
@@ -454,7 +454,7 @@ async function confirmBooking() {
 
 /* Success */
 .success-step { text-align: center; }
-.success-icon-wrapper { width: 72px; height: 72px; background: linear-gradient(135deg, rgba(201, 168, 76, 0.2), rgba(201, 168, 76, 0.05)); border: 1px solid rgba(201, 168, 76, 0.2); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--primary); margin: 0 auto 16px; filter: drop-shadow(0 0 16px rgba(201, 168, 76, 0.2)); }
+.success-icon-wrapper { width: 72px; height: 72px; background: linear-gradient(135deg, var(--primary-glow-lg), var(--primary-light)); border: 1px solid var(--primary-glow-lg); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--primary); margin: 0 auto 16px; filter: drop-shadow(0 0 16px var(--primary-glow-lg)); }
 .success-summary { display: flex; align-items: center; justify-content: center; gap: 8px; flex-wrap: wrap; padding: 16px; background: rgba(255, 255, 255, 0.03); border: 1px solid var(--border); border-radius: 12px; margin: 20px 0 24px; font-size: 0.9rem; font-weight: 600; color: var(--fg); }
 .success-divider { color: var(--muted-fg); }
 .success-actions { display: flex; gap: 10px; justify-content: center; }

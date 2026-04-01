@@ -17,6 +17,8 @@ const messages = {
     myBookings: 'My Bookings',
     signOut: 'Sign Out',
     signIn: 'Sign In',
+    lightMode: 'Light mode',
+    darkMode: 'Dark mode',
 
     // Bottom tabs
     tabBook: 'Book',
@@ -119,6 +121,8 @@ const messages = {
     myBookings: 'Мои брони',
     signOut: 'Выйти',
     signIn: 'Войти',
+    lightMode: 'Светлая тема',
+    darkMode: 'Тёмная тема',
 
     tabBook: 'Бронь',
     tabTimetable: 'Расписание',
@@ -211,6 +215,8 @@ const messages = {
     myBookings: 'Mano rezervacijos',
     signOut: 'Atsijungti',
     signIn: 'Prisijungti',
+    lightMode: 'Šviesi tema',
+    darkMode: 'Tamsi tema',
 
     tabBook: 'Rezervuoti',
     tabTimetable: 'Tvarkaraštis',
